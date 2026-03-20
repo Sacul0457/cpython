@@ -181,6 +181,20 @@ dummy_func(void) {
         }
     }
 
+    op(_GUARD_TOS_OVERFLOWED, (value -- value)) {
+        if (sym_is_compact_int(value)) {
+            ADD_OP(_NOP, 0, 0);
+        }
+        sym_set_compact_int(value);
+    }
+
+    op(_GUARD_NOS_OVERFLOWED, (left, unused -- left, unused)) {
+        if (sym_is_compact_int(left)) {
+            ADD_OP(_NOP, 0, 0);
+        }
+        sym_set_compact_int(left);
+    }
+
     op(_CHECK_ATTR_CLASS, (type_version/2, owner -- owner)) {
         PyObject *type = (PyObject *)_PyType_LookupByVersion(type_version);
         if (type) {

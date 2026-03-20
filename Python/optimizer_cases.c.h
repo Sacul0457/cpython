@@ -559,10 +559,22 @@
         }
 
         case _GUARD_NOS_OVERFLOWED: {
+            JitOptRef left;
+            left = stack_pointer[-2];
+            if (sym_is_compact_int(left)) {
+                ADD_OP(_NOP, 0, 0);
+            }
+            sym_set_compact_int(left);
             break;
         }
 
         case _GUARD_TOS_OVERFLOWED: {
+            JitOptRef value;
+            value = stack_pointer[-1];
+            if (sym_is_compact_int(value)) {
+                ADD_OP(_NOP, 0, 0);
+            }
+            sym_set_compact_int(value);
             break;
         }
 
