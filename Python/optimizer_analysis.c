@@ -132,6 +132,7 @@ increment_mutations(PyObject* dict) {
 #define BUILTINS_WATCHER_ID 0
 #define GLOBALS_WATCHER_ID  1
 #define TYPE_WATCHER_ID  0
+#define FUNC_WATCHER_ID  0
 
 static int
 globals_watcher_callback(PyDict_WatchEvent event, PyObject* dict,
@@ -150,6 +151,18 @@ type_watcher_callback(PyTypeObject* type)
 {
     _Py_Executors_InvalidateDependency(_PyInterpreterState_GET(), type, 1);
     PyType_Unwatch(TYPE_WATCHER_ID, (PyObject *)type);
+    return 0;
+}
+
+static int
+func_watcher_callback(PyFunction_WatchEvent event, PyFunctionObject *func,
+                      PyObject *new_value)
+{
+    if (event == PyFunction_EVENT_DESTROY) {
+        return 0;
+    }
+    _Py_Executors_InvalidateDependency(_PyInterpreterState_GET(), func, 1);
+    PyFunction_ClearWatcher(FUNC_WATCHER_ID);
     return 0;
 }
 

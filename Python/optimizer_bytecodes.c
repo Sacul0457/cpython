@@ -868,7 +868,9 @@ dummy_func(void) {
             REPLACE_OP(this_instr, _NOP, 0, 0);
         }
         else {
-            sym_set_func_version(ctx, callable, func_version);
+            if (sym_set_func_version(ctx, callable, func_version)) {
+                PyFunction_AddWatcher(func_watcher_callback);
+            }
         }
     }
 
